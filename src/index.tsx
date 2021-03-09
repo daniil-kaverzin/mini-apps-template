@@ -1,5 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {
+  ConfigProvider,
+  AdaptivityProvider,
+  AppRoot as VKUIAppRoot,
+} from '@vkontakte/vkui';
+import '@vkontakte/vkui/dist/vkui.css';
 import vkBridge from '@vkontakte/vk-bridge';
 
 import { AppRoot } from './components/AppRoot';
@@ -8,9 +14,15 @@ import { AppRoot } from './components/AppRoot';
 // application hide loader and display this application.
 vkBridge.send('VKWebAppInit');
 
-// We are making some timeout due to we are unable to get device insets
-// correctly. There is a little timeout after VKWebAppInit is called when
-// we cannot get truthy insets
-setTimeout(() => {
-  ReactDOM.render(<AppRoot />, document.getElementById('root'));
-}, 10);
+window.onload = () => {
+  ReactDOM.render(
+    <ConfigProvider>
+      <AdaptivityProvider>
+        <VKUIAppRoot>
+          <AppRoot />
+        </VKUIAppRoot>
+      </AdaptivityProvider>
+    </ConfigProvider>,
+    document.getElementById('root'),
+  );
+};

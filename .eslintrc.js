@@ -22,10 +22,12 @@ module.exports = {
     '@typescript-eslint/interface-name-prefix': 0,
     '@typescript-eslint/explicit-function-return-type': 0,
     '@typescript-eslint/ban-types': 'off',
+    '@typescript-eslint/no-var-requires': 0,
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
   },
   settings: {
     react: {
-      version: '16.12.0',
+      version: '17.0.1',
     },
   },
 };

@@ -1,25 +1,48 @@
-import React, { memo, useEffect } from 'react';
+import React, { FC, memo } from 'react';
+import {
+  Button,
+  Div,
+  Panel,
+  PanelHeader,
+  PanelHeaderBack,
+  Root,
+  View,
+} from '@vkontakte/vkui';
+import { useThrottlingLocation, useRouter } from '@happysanta/router';
+import {
+  PANEL_FIRST,
+  PANEL_SECOND,
+  ROUTE_SECOND,
+  VIEW_MAIN,
+} from '../providers/RouteProvider';
 
-import { AppTree } from '../AppTree';
+export const App: FC = memo(() => {
+  const router = useRouter();
+  const [location] = useThrottlingLocation();
 
-import { useDoubleTapHandler, useRouter } from '../../hooks';
-import { viewsTree } from '../../trees';
-
-/**
- * Visual entry of application
- * @type {React.NamedExoticComponent<object>}
- */
-export const App = memo(function App() {
-  const { view, panel } = useRouter().currentState;
-  const onTouchStart = useDoubleTapHandler();
-
-  // Add handler which prevents scroll after double tapping the screen
-  useEffect(() => {
-    const body = document.documentElement;
-    body.addEventListener('touchstart', onTouchStart, { passive: false });
-
-    return () => body.removeEventListener('touchstart', onTouchStart);
-  }, [onTouchStart]);
-
-  return <AppTree tree={viewsTree} activeView={view} activePanel={panel} />;
+  return (
+    <Root activeView={location.getViewId()}>
+      <View id={VIEW_MAIN} activePanel={location.getPanelId()}>
+        <Panel id={PANEL_FIRST}>
+          <PanelHeader>Панель 1</PanelHeader>
+          <Div>
+            <Button
+              size="l"
+              stretched
+              onClick={() => router.pushPage(ROUTE_SECOND)}
+            >
+              Перейти к панели 2
+            </Button>
+          </Div>
+        </Panel>
+        <Panel id={PANEL_SECOND}>
+          <PanelHeader
+            left={<PanelHeaderBack onClick={() => router.popPage()} />}
+          >
+            Панель 2
+          </PanelHeader>
+        </Panel>
+      </View>
+    </Root>
+  );
 });

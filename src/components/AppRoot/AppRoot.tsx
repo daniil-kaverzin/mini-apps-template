@@ -1,56 +1,43 @@
-import React, { PureComponent } from 'react';
-
-import { AppLoadingView } from '../views/AppLoadingView';
-import { AppCrashView } from '../views/AppCrashView';
-import { App } from '../App';
-import { Router } from 'vkma-router';
-import { ServicePanel } from '../misc/ServicePanel';
-import {
-  DeviceProvider,
-  ThemeProviderConnected,
-  GlobalStyleSheet,
-  ThemeType,
-  createBrightLightTheme,
-  getLaunchParams,
-} from 'vkma-ui';
-import { VKStorageProvider } from '../VKStorageProvider';
-import { ConfigProvider } from '../ConfigProvider';
-import { ApolloProvider } from '../ApolloProvider';
-import { Provider as StoreProvider, ReactReduxContext } from 'react-redux';
-
-import { createReduxStore, ReduxState } from '../../redux';
-import { appRootContext } from './context';
-import vkBridge, {
-  AppearanceSchemeType,
-  VKBridgeSubscribeHandler,
-} from '@vkontakte/vk-bridge';
-import { getInitialHistory, getStorageKeys } from '../../utils';
-import { routingTree } from '../../trees';
-import config from '../../config';
-
-import { AppRootState, AppRootContext } from './types';
-import { StorageFieldEnum, StorageValuesMap } from '../../types';
+import React, { Fragment, PureComponent } from 'react';
 import { Store } from 'redux';
+import { Provider as StoreProvider, ReactReduxContext } from 'react-redux';
+import { Dictionary } from '@vkontakte/vkjs';
+import vkBridge, { VKBridgeSubscribeHandler } from '@vkontakte/vk-bridge';
+import { ScreenSpinner } from '@vkontakte/vkui';
 
-const { Provider: AppRootProvider } = appRootContext;
+import { ApolloProvider } from '../ApolloProvider';
+import { AppCrash } from '../views/AppCrash';
+import { App } from '../App';
+import { ServicePanel } from '../misc/ServicePanel';
+import { VKStorageProvider } from '../VKStorageProvider';
+import { createReduxStore, ReduxState } from '../../redux';
+import { getStorageKeys } from '../../utils';
+import config from '../../config';
+import { StorageFieldEnum, StorageValuesMap } from '../../types';
+import { RouterProvider } from '../providers/RouteProvider';
+
+declare global {
+  interface Window {
+    reinitApp: () => void;
+  }
+}
 
 // Assign human-readable store provider name for debugging purposes
 ReactReduxContext.displayName = 'StoreProvider';
+
+export interface AppRootProps {}
+
+export interface AppRootState {
+  loading: boolean;
+  error?: string;
+  storage?: Dictionary<any>;
+}
 
 /**
  * Root application component. Everything application requires for showing
  * first screen is being loaded here
  */
-export class AppRoot extends PureComponent<
-  Record<string, never>,
-  AppRootState
-> {
-  /**
-   * Application root context
-   * @type {{init: () => Promise<void>}}
-   */
-  private appRootContext: AppRootContext = { init: this.init.bind(this) };
-
+export class AppRoot extends PureComponent<AppRootProps, AppRootState> {
   /**
    * Redux store
    * @type {Store<ReduxState>}
@@ -61,14 +48,9 @@ export class AppRoot extends PureComponent<
    * Application launch parameters
    * @type {LaunchParams}
    */
-  private readonly launchParams = getLaunchParams(
-    window.location.search.slice(1),
-  );
-  private readonly launchParamsStr = window.location.search.slice(1);
 
   public state: AppRootState = {
     loading: true,
-    theme: createBrightLightTheme,
   };
 
   public async componentDidMount() {
@@ -76,13 +58,7 @@ export class AppRoot extends PureComponent<
     // bridge and add event listener
     vkBridge.subscribe(this.onVKBridgeEvent);
 
-    // Update device interface colors if required
-    if (vkBridge.supports('VKWebAppSetViewSettings')) {
-      await vkBridge.send('VKWebAppSetViewSettings', {
-        status_bar_style: 'dark',
-        action_bar_color: 'black',
-      });
-    }
+    window.reinitApp = () => this.init();
 
     // Init application
     await this.init();
@@ -99,57 +75,33 @@ export class AppRoot extends PureComponent<
   }
 
   public render() {
-    const { loading, error, history, storage, theme } = this.state;
+    const { loading, error, storage } = this.state;
 
-    if (loading || !storage || !history || error) {
-      const init = this.init.bind(this);
-
+    if (loading || error || !storage) {
       return (
-        <DeviceProvider automaticUpdate={true}>
-          <ThemeProviderConnected theme={theme}>
-            <GlobalStyleSheet>
-              {error ? (
-                <AppCrashView onRestartClick={init} error={error} />
-              ) : (
-                <AppLoadingView />
-              )}
-            </GlobalStyleSheet>
-          </ThemeProviderConnected>
-        </DeviceProvider>
+        <Fragment>
+          {error && <AppCrash onRestartClick={this.init} error={error} />}
+          {!error && <ScreenSpinner />}
+        </Fragment>
       );
     }
-    const { store, appRootContext, launchParams, launchParamsStr } = this;
     const { gqlWsUrl, gqlHttpUrl } = config;
 
     return (
-      <AppRootProvider value={appRootContext}>
-        <StoreProvider store={store}>
-          <VKStorageProvider storage={storage}>
-            <DeviceProvider automaticUpdate={true}>
-              <ConfigProvider
-                launchParams={launchParams}
-                envConfig={config}
-                automaticUpdate={true}
-              >
-                <ApolloProvider
-                  httpUrl={gqlHttpUrl}
-                  wsUrl={gqlWsUrl}
-                  launchParams={launchParamsStr}
-                >
-                  <ThemeProviderConnected theme={theme}>
-                    <Router initialHistory={history} tree={routingTree}>
-                      <GlobalStyleSheet>
-                        <App />
-                        <ServicePanel />
-                      </GlobalStyleSheet>
-                    </Router>
-                  </ThemeProviderConnected>
-                </ApolloProvider>
-              </ConfigProvider>
-            </DeviceProvider>
-          </VKStorageProvider>
-        </StoreProvider>
-      </AppRootProvider>
+      <StoreProvider store={this.store}>
+        <VKStorageProvider storage={storage}>
+          <ApolloProvider
+            httpUrl={gqlHttpUrl}
+            wsUrl={gqlWsUrl}
+            launchParams={window.location.search.slice(1)}
+          >
+            <RouterProvider>
+              <App />
+            </RouterProvider>
+            <ServicePanel />
+          </ApolloProvider>
+        </VKStorageProvider>
+      </StoreProvider>
     );
   }
 
@@ -160,26 +112,17 @@ export class AppRoot extends PureComponent<
    */
   private onVKBridgeEvent: VKBridgeSubscribeHandler = (event) => {
     if (event.detail && event.detail.type === 'VKWebAppUpdateConfig') {
-      const scheme =
-        'scheme' in event.detail.data
-          ? event.detail.data.scheme
-          : 'client_light';
-      const themes: Record<AppearanceSchemeType, ThemeType> = {
-        client_dark: createBrightLightTheme,
-        space_gray: createBrightLightTheme,
-        client_light: createBrightLightTheme,
-        bright_light: createBrightLightTheme,
-      };
+      const scheme = event.detail.data.scheme || 'bright_light';
 
-      this.setState({ theme: themes[scheme] });
+      document.body.setAttribute('scheme', scheme);
     }
   };
 
   /**
    * Initializes application
    */
-  private async init() {
-    this.setState({ loading: true });
+  private init = async () => {
+    this.setState({ loading: true, error: undefined });
 
     try {
       // Performing all async operations and getting data to launch application
@@ -187,14 +130,13 @@ export class AppRoot extends PureComponent<
         getStorageKeys<StorageValuesMap>(...Object.values(StorageFieldEnum)),
       ]);
 
-      // Create history depending on initial data
-      const history = getInitialHistory();
-
-      // this.setState({loading: false, storage: {}, history});
-      this.setState({ loading: false, storage, history });
-    } catch (e) {
+      this.setState({ loading: false, storage });
+    } catch (error) {
       // In case error appears, catch it and display
-      this.setState({ error: e.message, loading: false });
+      this.setState({
+        error: error.message || 'Error',
+        loading: false,
+      });
     }
-  }
+  };
 }
