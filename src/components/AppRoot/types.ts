@@ -1,7 +1,7 @@
-import {StorageValuesMap} from '../../types';
-import {NonIndexedHistory} from 'vkma-router';
-import {ThemeType} from 'vkma-ui';
-import {AppTree} from '../../trees';
+import { StorageValuesMap } from '../../types';
+import { NonIndexedHistory } from 'vkma-router';
+import { ThemeType } from 'vkma-ui';
+import { AppTree } from '../../trees';
 
 export interface AppRootState {
   loading: boolean;

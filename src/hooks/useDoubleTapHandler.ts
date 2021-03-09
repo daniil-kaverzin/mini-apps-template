@@ -1,4 +1,4 @@
-import {useCallback, useRef} from 'react';
+import { useCallback, useRef } from 'react';
 
 type OnTouchStart = (event: TouchEvent) => void;
 
@@ -26,7 +26,7 @@ export function useDoubleTapHandler(): OnTouchStart {
     lastClientY: 0,
   });
 
-  return useCallback<OnTouchStart>(event => {
+  return useCallback<OnTouchStart>((event) => {
     // Exit early if this involves more than one finger (e.g. pinch to zoom)
     if (event.touches.length > 1) {
       return;
@@ -34,7 +34,7 @@ export function useDoubleTapHandler(): OnTouchStart {
 
     const tapAt = new Date().getTime();
     const timeDiff = tapAt - meta.current.lastTapAt;
-    const {clientX, clientY} = event.touches[0];
+    const { clientX, clientY } = event.touches[0];
     const xDiff = Math.abs(meta.current.lastClientX - clientX);
     const yDiff = Math.abs(meta.current.lastClientY - clientY);
     if (
@@ -47,10 +47,12 @@ export function useDoubleTapHandler(): OnTouchStart {
 
       // Trigger a fake click for the tap we just prevented
       if (event.target) {
-        event.target.dispatchEvent(new Event('click', {
-          bubbles: true,
-          cancelable: true,
-        }));
+        event.target.dispatchEvent(
+          new Event('click', {
+            bubbles: true,
+            cancelable: true,
+          }),
+        );
       }
     }
     meta.current.lastClientX = clientX;

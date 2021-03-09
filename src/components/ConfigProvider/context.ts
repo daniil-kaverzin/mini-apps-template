@@ -1,7 +1,7 @@
-import {createContext, useContext} from 'react';
-import {useConfig as useVKConfig} from 'vkma-ui';
+import { createContext, useContext } from 'react';
+import { useConfig as useVKConfig } from 'vkma-ui';
 
-import {ConfigContext} from './types';
+import { ConfigContext } from './types';
 
 export const configContext = createContext<ConfigContext>({
   envConfig: {
@@ -13,7 +13,7 @@ export const useConfig = () => {
   const config = useContext(configContext);
   const vkConfig = useVKConfig();
 
-  return {...config, ...vkConfig};
+  return { ...config, ...vkConfig };
 };
 
 configContext.displayName = 'ConfigContext';

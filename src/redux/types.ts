@@ -1,5 +1,4 @@
 /**
  * Redux state fields description
  */
-export interface ReduxState {
-}
+export interface ReduxState {}

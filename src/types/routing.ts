@@ -1,6 +1,6 @@
-import {ComponentType} from 'react';
-import {MountableProps, ViewProps, PanelProps} from 'vkma-ui';
-import {IdType} from 'vkma-router';
+import { ComponentType } from 'react';
+import { MountableProps, ViewProps, PanelProps } from 'vkma-ui';
+import { IdType } from 'vkma-router';
 
 /**
  * Map where key has id type and value is passed type
@@ -67,5 +67,4 @@ export enum PanelsEnum {
  * List of available popups in project. Required to avoid routing to
  * non-existing popup
  */
-export enum PopupsEnum {
-}
+export enum PopupsEnum {}

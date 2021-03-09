@@ -1,5 +1,5 @@
-import {Config} from '../../config';
-import {ConfigProviderProps as VKConfigProviderProps} from 'vkma-ui';
+import { Config } from '../../config';
+import { ConfigProviderProps as VKConfigProviderProps } from 'vkma-ui';
 
 export interface ConfigContext {
   envConfig: Config;

@@ -1,10 +1,11 @@
-import {ReduxState} from './types';
-import {Store, createStore, combineReducers} from 'redux';
-import {devToolsEnhancer} from 'redux-devtools-extension';
+import { ReduxState } from './types';
+import { Store, createStore, combineReducers } from 'redux';
+import { devToolsEnhancer } from 'redux-devtools-extension';
 
-const reducers = combineReducers<ReduxState>({
-});
+const reducers = combineReducers<ReduxState>({});
 
-export function createReduxStore(state?: Partial<ReduxState>): Store<ReduxState> {
+export function createReduxStore(
+  state?: Partial<ReduxState>,
+): Store<ReduxState> {
   return createStore(reducers, state, devToolsEnhancer({}));
 }

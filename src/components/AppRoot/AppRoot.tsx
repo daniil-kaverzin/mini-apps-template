@@ -1,37 +1,38 @@
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from 'react';
 
-import {AppLoadingView} from '../views/AppLoadingView';
-import {AppCrashView} from '../views/AppCrashView';
-import {App} from '../App';
-import {Router} from 'vkma-router';
-import {ServicePanel} from '../misc/ServicePanel';
+import { AppLoadingView } from '../views/AppLoadingView';
+import { AppCrashView } from '../views/AppCrashView';
+import { App } from '../App';
+import { Router } from 'vkma-router';
+import { ServicePanel } from '../misc/ServicePanel';
 import {
   DeviceProvider,
   ThemeProviderConnected,
   GlobalStyleSheet,
   ThemeType,
-  createBrightLightTheme, getLaunchParams,
+  createBrightLightTheme,
+  getLaunchParams,
 } from 'vkma-ui';
-import {VKStorageProvider} from '../VKStorageProvider';
-import {ConfigProvider} from '../ConfigProvider';
-import {ApolloProvider} from '../ApolloProvider';
-import {Provider as StoreProvider, ReactReduxContext} from 'react-redux';
+import { VKStorageProvider } from '../VKStorageProvider';
+import { ConfigProvider } from '../ConfigProvider';
+import { ApolloProvider } from '../ApolloProvider';
+import { Provider as StoreProvider, ReactReduxContext } from 'react-redux';
 
-import {createReduxStore, ReduxState} from '../../redux';
-import {appRootContext} from './context';
+import { createReduxStore, ReduxState } from '../../redux';
+import { appRootContext } from './context';
 import vkBridge, {
   AppearanceSchemeType,
   VKBridgeSubscribeHandler,
 } from '@vkontakte/vk-bridge';
-import {getInitialHistory, getStorageKeys} from '../../utils';
-import {routingTree} from '../../trees';
+import { getInitialHistory, getStorageKeys } from '../../utils';
+import { routingTree } from '../../trees';
 import config from '../../config';
 
-import {AppRootState, AppRootContext} from './types';
-import {StorageFieldEnum, StorageValuesMap} from '../../types';
-import {Store} from 'redux';
+import { AppRootState, AppRootContext } from './types';
+import { StorageFieldEnum, StorageValuesMap } from '../../types';
+import { Store } from 'redux';
 
-const {Provider: AppRootProvider} = appRootContext;
+const { Provider: AppRootProvider } = appRootContext;
 
 // Assign human-readable store provider name for debugging purposes
 ReactReduxContext.displayName = 'StoreProvider';
@@ -40,12 +41,15 @@ ReactReduxContext.displayName = 'StoreProvider';
  * Root application component. Everything application requires for showing
  * first screen is being loaded here
  */
-export class AppRoot extends PureComponent<{}, AppRootState> {
+export class AppRoot extends PureComponent<
+  Record<string, never>,
+  AppRootState
+> {
   /**
    * Application root context
    * @type {{init: () => Promise<void>}}
    */
-  private appRootContext: AppRootContext = {init: this.init.bind(this)};
+  private appRootContext: AppRootContext = { init: this.init.bind(this) };
 
   /**
    * Redux store
@@ -57,7 +61,9 @@ export class AppRoot extends PureComponent<{}, AppRootState> {
    * Application launch parameters
    * @type {LaunchParams}
    */
-  private readonly launchParams = getLaunchParams(window.location.search.slice(1));
+  private readonly launchParams = getLaunchParams(
+    window.location.search.slice(1),
+  );
   private readonly launchParamsStr = window.location.search.slice(1);
 
   public state: AppRootState = {
@@ -84,7 +90,7 @@ export class AppRoot extends PureComponent<{}, AppRootState> {
 
   public componentDidCatch(error: Error) {
     // Catch error if it did not happen before
-    this.setState({error: error.message});
+    this.setState({ error: error.message });
   }
 
   public componentWillUnmount() {
@@ -93,7 +99,7 @@ export class AppRoot extends PureComponent<{}, AppRootState> {
   }
 
   public render() {
-    const {loading, error, history, storage, theme} = this.state;
+    const { loading, error, history, storage, theme } = this.state;
 
     if (loading || !storage || !history || error) {
       const init = this.init.bind(this);
@@ -102,16 +108,18 @@ export class AppRoot extends PureComponent<{}, AppRootState> {
         <DeviceProvider automaticUpdate={true}>
           <ThemeProviderConnected theme={theme}>
             <GlobalStyleSheet>
-              {error
-                ? <AppCrashView onRestartClick={init} error={error}/>
-                : <AppLoadingView/>}
+              {error ? (
+                <AppCrashView onRestartClick={init} error={error} />
+              ) : (
+                <AppLoadingView />
+              )}
             </GlobalStyleSheet>
           </ThemeProviderConnected>
         </DeviceProvider>
       );
     }
-    const {store, appRootContext, launchParams, launchParamsStr} = this;
-    const {gqlWsUrl, gqlHttpUrl} = config;
+    const { store, appRootContext, launchParams, launchParamsStr } = this;
+    const { gqlWsUrl, gqlHttpUrl } = config;
 
     return (
       <AppRootProvider value={appRootContext}>
@@ -131,8 +139,8 @@ export class AppRoot extends PureComponent<{}, AppRootState> {
                   <ThemeProviderConnected theme={theme}>
                     <Router initialHistory={history} tree={routingTree}>
                       <GlobalStyleSheet>
-                        <App/>
-                        <ServicePanel/>
+                        <App />
+                        <ServicePanel />
                       </GlobalStyleSheet>
                     </Router>
                   </ThemeProviderConnected>
@@ -150,11 +158,12 @@ export class AppRoot extends PureComponent<{}, AppRootState> {
    * sent from bridge
    * @param {VKBridgeEvent<ReceiveMethodName>} event
    */
-  private onVKBridgeEvent: VKBridgeSubscribeHandler = event => {
+  private onVKBridgeEvent: VKBridgeSubscribeHandler = (event) => {
     if (event.detail && event.detail.type === 'VKWebAppUpdateConfig') {
-      const scheme = 'scheme' in event.detail.data
-        ? event.detail.data.scheme
-        : 'client_light';
+      const scheme =
+        'scheme' in event.detail.data
+          ? event.detail.data.scheme
+          : 'client_light';
       const themes: Record<AppearanceSchemeType, ThemeType> = {
         client_dark: createBrightLightTheme,
         space_gray: createBrightLightTheme,
@@ -162,7 +171,7 @@ export class AppRoot extends PureComponent<{}, AppRootState> {
         bright_light: createBrightLightTheme,
       };
 
-      this.setState({theme: themes[scheme]});
+      this.setState({ theme: themes[scheme] });
     }
   };
 
@@ -170,7 +179,7 @@ export class AppRoot extends PureComponent<{}, AppRootState> {
    * Initializes application
    */
   private async init() {
-    this.setState({loading: true});
+    this.setState({ loading: true });
 
     try {
       // Performing all async operations and getting data to launch application
@@ -182,10 +191,10 @@ export class AppRoot extends PureComponent<{}, AppRootState> {
       const history = getInitialHistory();
 
       // this.setState({loading: false, storage: {}, history});
-      this.setState({loading: false, storage, history});
+      this.setState({ loading: false, storage, history });
     } catch (e) {
       // In case error appears, catch it and display
-      this.setState({error: e.message, loading: false});
+      this.setState({ error: e.message, loading: false });
     }
   }
 }

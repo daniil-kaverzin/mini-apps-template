@@ -1,4 +1,4 @@
-import {Context, useContext} from 'react';
+import { Context, useContext } from 'react';
 
 /**
  * Creates function which calls useContext and throws an error in case, when

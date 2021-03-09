@@ -1,19 +1,17 @@
-import React, {memo, useCallback, useState} from 'react';
+import React, { memo, useCallback, useState } from 'react';
 
-import {makeStyles, withStyles} from '@material-ui/styles';
-import {Theme} from '../../theme/types';
+import { makeStyles, withStyles } from '@material-ui/styles';
+import { Theme } from '../../theme/types';
 
-import {copyToClipboard} from '../../utils';
+import { copyToClipboard } from '../../utils';
 
-import {Button, useDevice} from 'vkma-ui';
-import {Modal} from '../Modal';
-import {ModalHeader} from '../ModalHeader';
-import {ModalBody} from '../ModalBody';
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-// @ts-ignore FIXME: https://github.com/VKCOM/icons/issues/14
+import { Button, useDevice } from 'vkma-ui';
+import { Modal } from '../Modal';
+import { ModalHeader } from '../ModalHeader';
+import { ModalBody } from '../ModalBody';
+
 import DismissIcon from '@vkontakte/icons/dist/24/dismiss';
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-// @ts-ignore FIXME: https://github.com/VKCOM/icons/issues/14
+
 import CopyIcon from '@vkontakte/icons/dist/24/copy';
 
 import emojiSadImage from '../../assets/emoji-sad.png';
@@ -27,9 +25,9 @@ interface UseStylesProps extends Props {
   bottomInset: number;
 }
 
-const StyledModalHeader = withStyles({after: {padding: 0}})(ModalHeader);
+const StyledModalHeader = withStyles({ after: { padding: 0 } })(ModalHeader);
 
-const useStyles = makeStyles<Theme, UseStylesProps>(theme => ({
+const useStyles = makeStyles<Theme, UseStylesProps>((theme) => ({
   root: {
     position: 'fixed',
     top: 0,
@@ -52,7 +50,7 @@ const useStyles = makeStyles<Theme, UseStylesProps>(theme => ({
     bottom: 0,
     left: 0,
     right: 0,
-    padding: props => `0 16px ${props.bottomInset + 15}px`,
+    padding: (props) => `0 16px ${props.bottomInset + 15}px`,
   },
   button: {
     '& + &': {
@@ -67,10 +65,10 @@ const useStyles = makeStyles<Theme, UseStylesProps>(theme => ({
     lineHeight: '30px',
     margin: 0,
   },
-  error: {whiteSpace: 'pre-wrap', marginBottom: 15},
-  header: {fontSize: 21, lineHeight: '26px'},
-  dismissButton: {padding: 14},
-  dismissIcon: {color: '#818c99'},
+  error: { whiteSpace: 'pre-wrap', marginBottom: 15 },
+  header: { fontSize: 21, lineHeight: '26px' },
+  dismissButton: { padding: 14 },
+  dismissIcon: { color: '#818c99' },
 }));
 
 /**
@@ -78,9 +76,9 @@ const useStyles = makeStyles<Theme, UseStylesProps>(theme => ({
  * @type {React.NamedExoticComponent<Props>}
  */
 export const AppCrashView = memo((props: Props) => {
-  const {onRestartClick, error} = props;
-  const {insets} = useDevice();
-  const mc = useStyles({...props, bottomInset: insets.bottom});
+  const { onRestartClick, error } = props;
+  const { insets } = useDevice();
+  const mc = useStyles({ ...props, bottomInset: insets.bottom });
   const [showError, setShowError] = useState(false);
   const [copying, setCopying] = useState(false);
 
@@ -88,15 +86,14 @@ export const AppCrashView = memo((props: Props) => {
     setCopying(true);
     try {
       await copyToClipboard(error);
-    } catch (e) {
-    }
+    } catch (e) {}
     setCopying(false);
   }, [error]);
 
   return (
     <>
       <div className={mc.root}>
-        <img className={mc.emoji} src={emojiSadImage} alt={''}/>
+        <img className={mc.emoji} src={emojiSadImage} alt={''} />
         <p className={mc.title}>Упс, что-то сломалось</p>
         <div className={mc.bottom}>
           <Button
@@ -118,14 +115,16 @@ export const AppCrashView = memo((props: Props) => {
         </div>
       </div>
       <Modal show={showError} onClose={() => setShowError(false)}>
-        <StyledModalHeader after={
-          <div
-            className={mc.dismissButton}
-            onClick={() => setShowError(false)}
-          >
-            <DismissIcon className={mc.dismissIcon}/>
-          </div>
-        }>
+        <StyledModalHeader
+          after={
+            <div
+              className={mc.dismissButton}
+              onClick={() => setShowError(false)}
+            >
+              <DismissIcon className={mc.dismissIcon} />
+            </div>
+          }
+        >
           Ошибка
         </StyledModalHeader>
         <ModalBody>
@@ -133,7 +132,7 @@ export const AppCrashView = memo((props: Props) => {
           <Button
             fullWidth={true}
             color={'secondary'}
-            before={<CopyIcon/>}
+            before={<CopyIcon />}
             onClick={onCopyClick}
             disabled={copying}
           >

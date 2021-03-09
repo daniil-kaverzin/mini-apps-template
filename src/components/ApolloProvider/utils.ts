@@ -1,10 +1,10 @@
-import {split} from 'apollo-link';
-import {getMainDefinition} from 'apollo-utilities';
+import { split } from 'apollo-link';
+import { getMainDefinition } from 'apollo-utilities';
 
 import ApolloClient from 'apollo-client';
-import {HttpLink} from 'apollo-link-http';
-import {WebSocketLink} from 'apollo-link-ws';
-import {InMemoryCache} from 'apollo-cache-inmemory';
+import { HttpLink } from 'apollo-link-http';
+import { WebSocketLink } from 'apollo-link-ws';
+import { InMemoryCache } from 'apollo-cache-inmemory';
 
 /**
  * Creates ApolloClient with websocket- and http-link
@@ -22,7 +22,7 @@ export function createApolloClient(
   // To check them on server side, we send them in header
   const httpLink = new HttpLink({
     uri: httpURI,
-    headers: {'x-launch-params': launchParams},
+    headers: { 'x-launch-params': launchParams },
   });
 
   // In WebSocket connection we are using connectionParams instead of headers,

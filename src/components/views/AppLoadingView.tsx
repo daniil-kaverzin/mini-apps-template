@@ -1,21 +1,24 @@
-import React, {memo} from 'react';
+import React, { memo } from 'react';
 
-import {makeStyles} from '@material-ui/styles';
+import { makeStyles } from '@material-ui/styles';
 
-const useStyles = makeStyles({
-  root: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'white',
-    textAlign: 'center',
+const useStyles = makeStyles(
+  {
+    root: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      bottom: 0,
+      right: 0,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'white',
+      textAlign: 'center',
+    },
   },
-}, {name: 'AppLoadingView'});
+  { name: 'AppLoadingView' },
+);
 
 /**
  * Вью которая отображается в случае, когда приложение загружается.
@@ -24,9 +27,5 @@ const useStyles = makeStyles({
 export const AppLoadingView = memo(() => {
   const mc = useStyles();
 
-  return (
-    <div className={mc.root}>
-      Loading
-    </div>
-  );
+  return <div className={mc.root}>Loading</div>;
 });

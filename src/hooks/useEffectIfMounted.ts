@@ -1,5 +1,5 @@
-import {DependencyList, EffectCallback, useEffect} from 'react';
-import {useMounted} from './useMounted';
+import { DependencyList, EffectCallback, useEffect } from 'react';
+import { useMounted } from './useMounted';
 
 /**
  * Calls effect only in case component was already mounted

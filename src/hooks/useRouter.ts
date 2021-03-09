@@ -1,5 +1,5 @@
-import {useRouter as useVKRouter} from 'vkma-router';
-import {AppTree} from '../trees';
+import { useRouter as useVKRouter } from 'vkma-router';
+import { AppTree } from '../trees';
 
 /**
  * Application context hook which uses router

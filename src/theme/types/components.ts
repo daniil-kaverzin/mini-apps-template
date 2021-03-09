@@ -6,7 +6,8 @@ import {
   PanelTheme,
   PanelHeaderTheme,
   SelectTheme,
-  SeparatorTheme, ViewTheme,
+  SeparatorTheme,
+  ViewTheme,
 } from '../component-themes';
 
 /**

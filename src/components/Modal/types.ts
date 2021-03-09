@@ -1,5 +1,5 @@
-import {ReactNode, ReactNodeArray} from 'react';
-import {EndHandler} from 'react-transition-group/Transition';
+import { ReactNode, ReactNodeArray } from 'react';
+import { EndHandler } from 'react-transition-group/Transition';
 
 export interface ModalContext {
   registerHeader(node: HTMLElement): void;
@@ -10,6 +10,6 @@ export interface ModalProps {
   children?: ReactNode | ReactNodeArray;
   show: boolean;
   onClose?(): void;
-  onClosed?: EndHandler;
+  onClosed?: EndHandler<any>;
   keepMounted?: boolean;
 }

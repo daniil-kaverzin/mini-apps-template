@@ -1,6 +1,6 @@
-import React, {memo, useCallback, useEffect, useMemo, useState} from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 
-import {vkStorageContext} from './context';
+import { vkStorageContext } from './context';
 
 import {
   MemoizeKey,
@@ -12,50 +12,55 @@ import {
 } from './types';
 
 import vkBridge from '@vkontakte/vk-bridge';
-import {StringKeys} from '../../types';
+import { StringKeys } from '../../types';
 
-const {Provider} = vkStorageContext;
+const { Provider } = vkStorageContext;
 
-export const VKStorageProvider = memo(
-  function VKStorageProvider<S extends {} = {}>(props: VKStorageProviderProps<S>) {
-    const {storage: parentStorage, children} = props;
+export const VKStorageProvider = memo(function VKStorageProvider<S extends {}>(
+  props: VKStorageProviderProps<S>,
+) {
+  const { storage: parentStorage, children } = props;
 
-    const [storage, setStorage] = useState<S>(() => {
-      return parentStorage || {} as S;
-    });
+  const [storage, setStorage] = useState<S>(() => {
+    return parentStorage || ({} as S);
+  });
 
-    // Updates storage value with bridge
-    const setVKStorageValue = useCallback(
-      <K extends StringKeys<S>>(key: K, value: S[K] | null) => {
-        return vkBridge.send('VKWebAppStorageSet', {
-          key,
-          // encodeURIComponent is a hack for russian letters. They are
-          // incorrectly written in Redis VK storage
-          value: encodeURIComponent(JSON.stringify(value)),
-        });
-      },
-      [],
-    );
+  // Updates storage value with bridge
+  const setVKStorageValue = useCallback(
+    <K extends StringKeys<S>>(key: K, value: S[K] | null) => {
+      return vkBridge.send('VKWebAppStorageSet', {
+        key,
+        // encodeURIComponent is a hack for russian letters. They are
+        // incorrectly written in Redis VK storage
+        value: encodeURIComponent(JSON.stringify(value)),
+      });
+    },
+    [],
+  );
 
-    // Memoizes value
-    const memoizeKey = useCallback<MemoizeKey<S>>(async (key, value) => {
+  // Memoizes value
+  const memoizeKey = useCallback<MemoizeKey<S>>(
+    async (key, value) => {
       await setVKStorageValue(key, value);
 
       // Update storage
-      setStorage(storage => {
+      setStorage((storage) => {
         if (value === null) {
           if (key in storage) {
             delete storage[key];
-            return {...storage};
+            return { ...storage };
           }
           return storage;
         }
-        return {...storage, [key]: value};
+        return { ...storage, [key]: value };
       });
-    }, [setVKStorageValue]);
+    },
+    [setVKStorageValue],
+  );
 
-    // Memoizes set of values
-    const memoizeMap = useCallback<MemoizeMap<S>>(async values => {
+  // Memoizes set of values
+  const memoizeMap = useCallback<MemoizeMap<S>>(
+    async (values) => {
       await Promise.all(
         Object.entries(values).map(([key, value]) => {
           return setVKStorageValue(key as any, value);
@@ -63,9 +68,9 @@ export const VKStorageProvider = memo(
       );
 
       // Update storage
-      setStorage(storage => {
+      setStorage((storage) => {
         let isStorageModified = false;
-        const copy = {...storage};
+        const copy = { ...storage };
 
         Object.entries(values).forEach(([key, value]) => {
           if (value === null) {
@@ -81,31 +86,32 @@ export const VKStorageProvider = memo(
 
         return isStorageModified ? copy : storage;
       });
-    }, [setVKStorageValue]);
+    },
+    [setVKStorageValue],
+  );
 
-    // Unified memoize method
-    const memoize = useCallback<MemoizeKey<S> | MemoizeMap<S>>(
-      (arg0, value) => {
-        if (typeof arg0 === 'object') {
-          return memoizeMap(arg0);
-        }
-        return memoizeKey(arg0, value);
-      },
-      [memoizeKey, memoizeMap],
-    );
+  // Unified memoize method
+  const memoize = useCallback<MemoizeKey<S> | MemoizeMap<S>>(
+    (arg0, value) => {
+      if (typeof arg0 === 'object') {
+        return memoizeMap(arg0);
+      }
+      return memoizeKey(arg0, value);
+    },
+    [memoizeKey, memoizeMap],
+  );
 
-    // Clears several keys
-    const clearKeys = useCallback<ClearKeys<S>>(async (...keys) => {
-      await Promise.all(
-        keys.map(k => setVKStorageValue(k, null)),
-      );
+  // Clears several keys
+  const clearKeys = useCallback<ClearKeys<S>>(
+    async (...keys) => {
+      await Promise.all(keys.map((k) => setVKStorageValue(k, null)));
 
       // Update storage
-      setStorage(storage => {
+      setStorage((storage) => {
         let isStorageModified = false;
-        const copy = {...storage};
+        const copy = { ...storage };
 
-        keys.forEach(key => {
+        keys.forEach((key) => {
           if (key in copy) {
             delete copy[key as keyof typeof copy];
             isStorageModified = true;
@@ -114,33 +120,40 @@ export const VKStorageProvider = memo(
 
         return isStorageModified ? copy : storage;
       });
-    }, [setVKStorageValue]);
+    },
+    [setVKStorageValue],
+  );
 
-    // Clears all storage keys
-    const clearAll = useCallback(async () => {
-      return clearKeys(...Object.keys(storage) as any);
-    }, [storage, clearKeys]);
+  // Clears all storage keys
+  const clearAll = useCallback(async () => {
+    return clearKeys(...(Object.keys(storage) as any));
+  }, [storage, clearKeys]);
 
-    const clear = useCallback<ClearKeys<S> | ClearAll>(keys => {
+  const clear = useCallback<ClearKeys<S> | ClearAll>(
+    (keys) => {
       if (typeof keys === 'undefined') {
         return clearAll();
       }
       return clearKeys(...(Array.isArray(keys) ? keys : [keys]));
-    }, [clearKeys, clearAll]);
+    },
+    [clearKeys, clearAll],
+  );
 
-    const context = useMemo<VKStorageContext<S>>(() => ({
+  const context = useMemo<VKStorageContext<S>>(
+    () => ({
       storage,
       memoize,
       clear,
-    }), [storage, memoize, clear]);
+    }),
+    [storage, memoize, clear],
+  );
 
-    // Each time new parent storage passed, update internal storage
-    useEffect(() => {
-      if (parentStorage) {
-        return setStorage(parentStorage);
-      }
-    }, [parentStorage]);
+  // Each time new parent storage passed, update internal storage
+  useEffect(() => {
+    if (parentStorage) {
+      return setStorage(parentStorage);
+    }
+  }, [parentStorage]);
 
-    return <Provider value={context}>{children}</Provider>;
-  },
-);
+  return <Provider value={context}>{children}</Provider>;
+});

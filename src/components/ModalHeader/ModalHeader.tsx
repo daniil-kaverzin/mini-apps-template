@@ -1,9 +1,15 @@
-import React, {memo, ReactNode, ReactNodeArray, useEffect, useRef} from 'react';
+import React, {
+  memo,
+  ReactNode,
+  ReactNodeArray,
+  useEffect,
+  useRef,
+} from 'react';
 
-import {makeStyles} from '@material-ui/styles';
-import {Theme} from '../../theme/types';
+import { makeStyles } from '@material-ui/styles';
+import { Theme } from '../../theme/types';
 
-import {useModalContext} from '../Modal';
+import { useModalContext } from '../Modal';
 
 export interface ModalHeaderProps {
   before?: ReactNode | ReactNodeArray;
@@ -48,10 +54,10 @@ const useStyles = makeStyles((theme: Theme) => ({
  * @type {React.NamedExoticComponent<Props>}
  */
 export const ModalHeader = memo((props: ModalHeaderProps) => {
-  const {before, after, children} = props;
+  const { before, after, children } = props;
   const mc = useStyles(props);
   const rootRef = useRef<HTMLDivElement>(null);
-  const {registerHeader} = useModalContext();
+  const { registerHeader } = useModalContext();
 
   // Register header in parent modal
   useEffect(() => {
@@ -62,15 +68,9 @@ export const ModalHeader = memo((props: ModalHeaderProps) => {
 
   return (
     <div className={mc.root} ref={rootRef}>
-      <div className={mc.before}>
-        {before}
-      </div>
-      <div className={mc.content}>
-        {children}
-      </div>
-      <div className={mc.after}>
-        {after}
-      </div>
+      <div className={mc.before}>{before}</div>
+      <div className={mc.content}>{children}</div>
+      <div className={mc.after}>{after}</div>
     </div>
   );
 });

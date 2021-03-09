@@ -1,13 +1,16 @@
-import {Theme} from '../types';
-import {themeDefaults} from './themeDefaults';
+import { Theme } from '../types';
+import { themeDefaults } from './themeDefaults';
 
 import {
   buttonSpaceGrayTheme,
   formControlSpaceGrayTheme,
   inputSpaceGrayTheme,
-  linkSpaceGrayTheme, panelHeaderSpaceGrayTheme, panelSpaceGrayTheme,
+  linkSpaceGrayTheme,
+  panelHeaderSpaceGrayTheme,
+  panelSpaceGrayTheme,
   selectSpaceGrayTheme,
-  separatorSpaceGrayTheme, viewSpaceGrayTheme,
+  separatorSpaceGrayTheme,
+  viewSpaceGrayTheme,
 } from '../component-themes';
 
 export const spaceGrayTheme: Theme = {

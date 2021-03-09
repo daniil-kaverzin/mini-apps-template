@@ -1,4 +1,4 @@
-import vkBridge, {TapticNotificationType} from '@vkontakte/vk-bridge';
+import vkBridge, { TapticNotificationType } from '@vkontakte/vk-bridge';
 
 /**
  * Посылает тактильное уведомление если оно поддерживается
@@ -7,7 +7,7 @@ import vkBridge, {TapticNotificationType} from '@vkontakte/vk-bridge';
  */
 export async function tapticNotification(type: TapticNotificationType) {
   if (vkBridge.supports('VKWebAppTapticNotificationOccurred')) {
-    return vkBridge.send('VKWebAppTapticNotificationOccurred', {type});
+    return vkBridge.send('VKWebAppTapticNotificationOccurred', { type });
   }
 }
 

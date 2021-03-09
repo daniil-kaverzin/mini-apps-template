@@ -1,13 +1,16 @@
-import {Theme} from '../types';
-import {themeDefaults} from './themeDefaults';
+import { Theme } from '../types';
+import { themeDefaults } from './themeDefaults';
 
 import {
   buttonBrightLightTheme,
   formControlBrightLightTheme,
   inputBrightLightTheme,
-  linkBrightLightTheme, panelBrightLightTheme, panelHeaderBrightLightTheme,
+  linkBrightLightTheme,
+  panelBrightLightTheme,
+  panelHeaderBrightLightTheme,
   selectBrightLightTheme,
-  separatorBrightLightTheme, viewBrightLightTheme,
+  separatorBrightLightTheme,
+  viewBrightLightTheme,
 } from '../component-themes';
 
 export const brightLightTheme: Theme = {

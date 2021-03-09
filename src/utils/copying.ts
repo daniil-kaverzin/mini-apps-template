@@ -37,7 +37,7 @@ async function fallbackCopyToClipboard(text: string) {
  */
 export async function copyToClipboard(text: string) {
   if (vkBridge.supports('VKWebAppCopyText')) {
-    return vkBridge.send('VKWebAppCopyText', {text});
+    return vkBridge.send('VKWebAppCopyText', { text });
   }
 
   if (!navigator.clipboard) {

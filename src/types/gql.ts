@@ -1,8 +1,7 @@
 /**
  * List of errors which can be sent from Apollo API
  */
-export enum APIErrorEnum {
-}
+export enum APIErrorEnum {}
 
 /**
  * Description of errors sent from Apollo API

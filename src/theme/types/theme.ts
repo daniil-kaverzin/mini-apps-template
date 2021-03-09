@@ -1,6 +1,6 @@
-import {Palette} from './palette';
-import {Typography} from './typography';
-import {Components} from './components';
+import { Palette } from './palette';
+import { Typography } from './typography';
+import { Components } from './components';
 
 /**
  * Описание темы
@@ -14,5 +14,4 @@ export interface Theme {
 /**
  * Shared themes options
  */
-export interface ThemeDefaults extends Pick<Theme, 'typography'> {
-}
+export interface ThemeDefaults extends Pick<Theme, 'typography'> {}

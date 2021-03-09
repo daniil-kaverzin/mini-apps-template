@@ -1,7 +1,7 @@
-import {PanelsEnum, PopupsEnum, ViewsEnum, ViewsTree} from './types';
-import {createSet, ValidateTree} from 'vkma-router';
-import {Panel1} from './components/panels/Panel1';
-import {Panel2} from './components/panels/Panel2';
+import { PanelsEnum, PopupsEnum, ViewsEnum, ViewsTree } from './types';
+import { createSet, ValidateTree } from 'vkma-router';
+import { Panel1 } from './components/panels/Panel1';
+import { Panel2 } from './components/panels/Panel2';
 
 /**
  * Application routing tree. Should be an extension of vkma-router's
@@ -10,10 +10,7 @@ import {Panel2} from './components/panels/Panel2';
  */
 export const routingTree = {
   views: {
-    [ViewsEnum.Hello]: createSet([
-      PanelsEnum.World,
-      PanelsEnum.Underworld,
-    ]),
+    [ViewsEnum.Hello]: createSet([PanelsEnum.World, PanelsEnum.Underworld]),
   },
   popups: createSet(Object.values(PopupsEnum)),
 };

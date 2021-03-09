@@ -1,5 +1,5 @@
-import {shallowEqual, useSelector as useReduxSelector} from 'react-redux';
-import {ReduxState} from '../redux/types';
+import { shallowEqual, useSelector as useReduxSelector } from 'react-redux';
+import { ReduxState } from '../redux/types';
 
 /**
  * Shortcut to original useSelector. Useful when you font want to specify
@@ -10,7 +10,7 @@ import {ReduxState} from '../redux/types';
  */
 export function useSelector<Selected = unknown>(
   selector: (state: ReduxState) => Selected,
-  equalityFn: (left: Selected, right: Selected) => boolean = shallowEqual
+  equalityFn: (left: Selected, right: Selected) => boolean = shallowEqual,
 ): Selected {
   return useReduxSelector(selector, equalityFn);
 }

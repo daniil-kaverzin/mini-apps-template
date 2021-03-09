@@ -1,6 +1,10 @@
-import {useMemo} from 'react';
-import {bindActionCreators, ActionCreator, ActionCreatorsMapObject} from 'redux';
-import {useDispatch} from 'react-redux';
+import { useMemo } from 'react';
+import {
+  bindActionCreators,
+  ActionCreator,
+  ActionCreatorsMapObject,
+} from 'redux';
+import { useDispatch } from 'react-redux';
 
 type Actions = ActionCreatorsMapObject<any> | ActionCreator<any>;
 
@@ -10,9 +14,8 @@ type Actions = ActionCreatorsMapObject<any> | ActionCreator<any>;
  */
 export function useActions<C extends Actions>(actions: C): C {
   const dispatch = useDispatch();
-  const actionsDeps = typeof actions === 'object'
-    ? Object.values(actions)
-    : [actions];
+  const actionsDeps =
+    typeof actions === 'object' ? Object.values(actions) : [actions];
 
   return useMemo(
     () => bindActionCreators(actions as any, dispatch),

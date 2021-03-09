@@ -1,44 +1,38 @@
-import React, {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import {createPortal} from 'react-dom';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 
-import {makeStyles} from '@material-ui/styles';
+import { makeStyles } from '@material-ui/styles';
 
-import {CSSTransition} from 'react-transition-group';
+import { CSSTransition } from 'react-transition-group';
 
-import {useModalRootContext} from '../ModalRoot';
-import {modalContext} from './context';
+import { useModalRootContext } from '../ModalRoot';
+import { modalContext } from './context';
 
-import {CSSTransitionClassNames} from 'react-transition-group/CSSTransition';
-import {ModalContext, ModalProps} from './types';
+import { CSSTransitionClassNames } from 'react-transition-group/CSSTransition';
+import { ModalContext, ModalProps } from './types';
 
 const CLEAR_ZONE = 50;
 const VK_CONTROLS_HEIGHT = 44;
 const TRANSITION_DURATION = 300;
-const {Provider} = modalContext;
+const { Provider } = modalContext;
 
 const useStyles = makeStyles({
   enter: {
-    '& $backdrop': {backgroundColor: 'transparent'},
-    '& $panel': {transform: 'translateY(100%)'},
+    '& $backdrop': { backgroundColor: 'transparent' },
+    '& $panel': { transform: 'translateY(100%)' },
   },
   enterActive: {
-    '& $backdrop': {backgroundColor: 'rgba(0,0,0,.4)'},
-    '& $panel': {transform: 'translateY(0)'},
+    '& $backdrop': { backgroundColor: 'rgba(0,0,0,.4)' },
+    '& $panel': { transform: 'translateY(0)' },
   },
   exit: {
-    '& $backdrop': {backgroundColor: 'rgba(0,0,0,.4)'},
-    '& $panel': {transform: 'translateY(0)'},
+    '& $backdrop': { backgroundColor: 'rgba(0,0,0,.4)' },
+    '& $panel': { transform: 'translateY(0)' },
   },
   exitActive: {
-    '& $root': {pointerEvents: 'none'},
-    '& $backdrop': {backgroundColor: 'transparent'},
-    '& $panel': {transform: 'translateY(100%)'},
+    '& $root': { pointerEvents: 'none' },
+    '& $backdrop': { backgroundColor: 'transparent' },
+    '& $panel': { transform: 'translateY(100%)' },
   },
   exitDone: {},
   root: {
@@ -77,21 +71,27 @@ const useStyles = makeStyles({
  * @type {React.NamedExoticComponent<Props>}
  */
 export const Modal = memo((props: ModalProps) => {
-  const {show, onClose, onClosed, keepMounted, children} = props;
+  const { show, onClose, onClosed, keepMounted, children } = props;
 
+  const { enter, enterActive, exit, exitActive, exitDone, ...mc } = useStyles(
+    props,
+  );
   const {
-    enter, enterActive, exit, exitActive, exitDone, ...mc
-  } = useStyles(props);
-  const {
-    rootNode, activeModal, unmountModal, mountModal,
+    rootNode,
+    activeModal,
+    unmountModal,
+    mountModal,
   } = useModalRootContext();
 
   const [header, setHeader] = useState<HTMLElement | null>();
   const [body, setBody] = useState<HTMLElement | null>();
-  const context = useMemo<ModalContext>(() => ({
-    registerBody: setBody,
-    registerHeader: setHeader,
-  }), []);
+  const context = useMemo<ModalContext>(
+    () => ({
+      registerBody: setBody,
+      registerHeader: setHeader,
+    }),
+    [],
+  );
 
   // Close modal on backdrop click
   const onBackdropClick = useCallback(() => {
@@ -113,8 +113,7 @@ export const Modal = memo((props: ModalProps) => {
     }
 
     const nomineeHeight = headerHeight + bodyHeight;
-    const maxHeight = rootNode.clientHeight - VK_CONTROLS_HEIGHT
-      - CLEAR_ZONE;
+    const maxHeight = rootNode.clientHeight - VK_CONTROLS_HEIGHT - CLEAR_ZONE;
 
     return nomineeHeight > maxHeight ? maxHeight : nomineeHeight;
   }, [header, body, rootNode]);
@@ -124,7 +123,7 @@ export const Modal = memo((props: ModalProps) => {
   const modalId = useMemo(Symbol, []);
   const isShown = modalId === activeModal;
   const classNames = useMemo<CSSTransitionClassNames>(
-    () => ({enter, enterActive, exit, exitActive, exitDone}),
+    () => ({ enter, enterActive, exit, exitActive, exitDone }),
     [enter, enterActive, exit, exitActive, exitDone],
   );
 
@@ -167,9 +166,9 @@ export const Modal = memo((props: ModalProps) => {
 
   // When calculatePanelHeight changed, it means, header, body or rootNode
   // were changed and we need to recalculate panel height
-  useEffect(
-    () => setPanelHeight(calculatePanelHeight()), [calculatePanelHeight],
-  );
+  useEffect(() => setPanelHeight(calculatePanelHeight()), [
+    calculatePanelHeight,
+  ]);
 
   return createPortal(
     <Provider value={context}>
@@ -181,8 +180,8 @@ export const Modal = memo((props: ModalProps) => {
         unmountOnExit={!keepMounted}
       >
         <div className={mc.root}>
-          <div className={mc.backdrop} onClick={onBackdropClick}/>
-          <div className={mc.panel} style={{height: panelHeight}}>
+          <div className={mc.backdrop} onClick={onBackdropClick} />
+          <div className={mc.panel} style={{ height: panelHeight }}>
             {children}
           </div>
         </div>

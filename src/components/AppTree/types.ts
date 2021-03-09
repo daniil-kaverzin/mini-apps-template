@@ -1,4 +1,4 @@
-import {ViewsTree} from '../../types';
+import { ViewsTree } from '../../types';
 
 export interface AppTreeProps {
   tree: ViewsTree;

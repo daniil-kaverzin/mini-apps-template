@@ -4,8 +4,8 @@ import {
   NonIndexedHistory,
 } from 'vkma-router';
 
-import {AppTree, routingTree} from '../trees';
-import {PanelsEnum, ViewsEnum} from '../types';
+import { AppTree, routingTree } from '../trees';
+import { PanelsEnum, ViewsEnum } from '../types';
 
 /**
  * Returns initial history
@@ -18,12 +18,14 @@ export function getInitialHistory(): NonIndexedHistory<AppTree> {
   // NOTE: Not sure this is the correct way of defining initial history.
   //  In enterprise application, it is required to define initial history
   //  depending on state from URL or other logic, not this simple one
-  const history: NonIndexedHistory<AppTree> = [{
-    view: ViewsEnum.Hello,
-    panel: PanelsEnum.World,
-    popup: null,
-    query: {},
-  }];
+  const history: NonIndexedHistory<AppTree> = [
+    {
+      view: ViewsEnum.Hello,
+      panel: PanelsEnum.World,
+      popup: null,
+      query: {},
+    },
+  ];
 
   if (historyState && isStateInTree(historyState, routingTree)) {
     history.push(historyState as any);

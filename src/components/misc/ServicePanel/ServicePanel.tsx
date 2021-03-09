@@ -1,6 +1,10 @@
-import
+import {
   // React,
-{memo, useEffect, useRef, useState} from 'react';
+  memo,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 // import {makeStyles} from '@material-ui/styles';
 
@@ -11,7 +15,7 @@ import
 
 // import {useStorage} from '../../../hooks';
 // import {useAppRootContext} from '../../app/AppRoot';
-import {tapticNotification} from '../../../utils';
+import { tapticNotification } from '../../../utils';
 
 // const useStyles = makeStyles({
 //   root: {

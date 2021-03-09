@@ -1,5 +1,5 @@
-import {APIError} from '../types';
-import {isApolloError} from 'apollo-client';
+import { APIError } from '../types';
+import { isApolloError } from 'apollo-client';
 
 /**
  * Detects if error is sent from Apollo API

@@ -1,4 +1,4 @@
-import {ReactNode, ReactNodeArray} from 'react';
+import { ReactNode, ReactNodeArray } from 'react';
 
 export interface ModalRootContext {
   activeModal: symbol | null;
