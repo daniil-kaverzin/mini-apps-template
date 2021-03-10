@@ -5,7 +5,7 @@ const { red, green } = require('chalk');
 const deployEnv = process.env.DEPLOY_ENV;
 const configFile = `.env.${deployEnv}`;
 
-const requiredEnvVars = ['REACT_APP_GQL_HTTP_URL', 'REACT_APP_GQL_WS_URL'];
+const requiredEnvVars = ['REACT_APP_GQL_HTTP_URL'];
 
 // Parse env file
 const { parsed } = config({ path: configFile });

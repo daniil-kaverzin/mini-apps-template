@@ -8,19 +8,18 @@ export interface ApolloProviderProps {
   children: ReactNode | ReactNodeArray;
   launchParams: string;
   httpUrl: string;
-  wsUrl: string;
 }
 
 export const ApolloProvider = memo(function ApolloProvider(
   props: ApolloProviderProps,
 ) {
-  const { httpUrl, wsUrl, launchParams, children } = props;
+  const { httpUrl, launchParams, children } = props;
 
   // Create Apollo client
-  const client = useMemo<any>(
-    () => createApolloClient(httpUrl, wsUrl, launchParams),
-    [httpUrl, wsUrl, launchParams],
-  );
+  const client = useMemo<any>(() => createApolloClient(httpUrl, launchParams), [
+    httpUrl,
+    launchParams,
+  ]);
 
   return <ReactApolloProvider client={client}>{children}</ReactApolloProvider>;
 });

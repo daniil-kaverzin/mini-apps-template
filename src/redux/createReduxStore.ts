@@ -1,8 +1,12 @@
-import { ReduxState } from './types';
 import { Store, createStore, combineReducers } from 'redux';
 import { devToolsEnhancer } from 'redux-devtools-extension';
 
-const reducers = combineReducers<ReduxState>({});
+import { ReduxState } from './types';
+import { launchParams } from './reducers/launchParams';
+
+const reducers = combineReducers<ReduxState>({
+  launchParams,
+});
 
 export function createReduxStore(
   state?: Partial<ReduxState>,

@@ -8,6 +8,7 @@ import React, {
   useState,
 } from 'react';
 import { ActionSheet, ActionSheetItem } from '@vkontakte/vkui';
+import { noop } from '@vkontakte/vkjs';
 
 import './ServicePanel.scss';
 import { tapticNotification } from '../../../utils';
@@ -67,6 +68,8 @@ export const ServicePanel: FC = memo(() => {
     return () => {
       window.removeEventListener('touchstart', onTouchStart);
       window.removeEventListener('touchend', onTouchEnd);
+
+      window.showServicePanel = noop;
     };
   }, []);
 
@@ -90,7 +93,16 @@ export const ServicePanel: FC = memo(() => {
           onClose={() => setShow(false)}
         >
           <ActionSheetItem autoclose onClick={window.reinitApp}>
-            Перезапустить приложение
+            Перезагрузить страницу
+          </ActionSheetItem>
+          <ActionSheetItem
+            autoclose
+            onClick={() => window.location.reload(true)}
+          >
+            Жёстко перезагрузить страницу
+          </ActionSheetItem>
+          <ActionSheetItem autoclose onClick={() => window.throwError('Test')}>
+            Открыть экран с ошибкой
           </ActionSheetItem>
           <ActionSheetItem autoclose onClick={() => storage?.clear()}>
             Очистить хранилище ВКонтакте

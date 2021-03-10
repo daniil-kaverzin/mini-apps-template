@@ -1,9 +1,10 @@
 import React, { Fragment, PureComponent } from 'react';
 import { Store } from 'redux';
 import { Provider as StoreProvider, ReactReduxContext } from 'react-redux';
-import { Dictionary } from '@vkontakte/vkjs';
+import { Dictionary, noop } from '@vkontakte/vkjs';
 import vkBridge, { VKBridgeSubscribeHandler } from '@vkontakte/vk-bridge';
 import { ScreenSpinner } from '@vkontakte/vkui';
+import qs from 'qs';
 
 import { ApolloProvider } from '../ApolloProvider';
 import { AppCrash } from '../views/AppCrash';
@@ -19,6 +20,7 @@ import { RouterProvider } from '../providers/RouteProvider';
 declare global {
   interface Window {
     reinitApp: () => void;
+    throwError: (message: string) => void;
   }
 }
 
@@ -29,6 +31,7 @@ export interface AppRootProps {}
 
 export interface AppRootState {
   loading: boolean;
+  queriesString: string;
   error?: string;
   storage?: Dictionary<any>;
 }
@@ -42,7 +45,7 @@ export class AppRoot extends PureComponent<AppRootProps, AppRootState> {
    * Redux store
    * @type {Store<ReduxState>}
    */
-  private readonly store: Store<ReduxState> = createReduxStore();
+  private store: Store<ReduxState> = createReduxStore();
 
   /**
    * Application launch parameters
@@ -51,6 +54,7 @@ export class AppRoot extends PureComponent<AppRootProps, AppRootState> {
 
   public state: AppRootState = {
     loading: true,
+    queriesString: window.location.search.slice(1),
   };
 
   public async componentDidMount() {
@@ -59,10 +63,15 @@ export class AppRoot extends PureComponent<AppRootProps, AppRootState> {
     vkBridge.subscribe(this.onVKBridgeEvent);
 
     window.reinitApp = () => this.init();
+    window.throwError = (message) => this.throwError(message);
 
     // Init application
     await this.init();
   }
+
+  private throwError = (error: string) => {
+    this.setState({ error });
+  };
 
   public componentDidCatch(error: Error) {
     // Catch error if it did not happen before
@@ -72,6 +81,8 @@ export class AppRoot extends PureComponent<AppRootProps, AppRootState> {
   public componentWillUnmount() {
     // When component unloads, remove all event listeners
     vkBridge.unsubscribe(this.onVKBridgeEvent);
+    window.reinitApp = noop;
+    window.throwError = noop;
   }
 
   public render() {
@@ -85,15 +96,13 @@ export class AppRoot extends PureComponent<AppRootProps, AppRootState> {
         </Fragment>
       );
     }
-    const { gqlWsUrl, gqlHttpUrl } = config;
 
     return (
       <StoreProvider store={this.store}>
         <VKStorageProvider storage={storage}>
           <ApolloProvider
-            httpUrl={gqlHttpUrl}
-            wsUrl={gqlWsUrl}
-            launchParams={window.location.search.slice(1)}
+            httpUrl={config.gqlHttpUrl}
+            launchParams={this.state.queriesString}
           >
             <RouterProvider>
               <App />
@@ -129,6 +138,10 @@ export class AppRoot extends PureComponent<AppRootProps, AppRootState> {
       const [storage] = await Promise.all([
         getStorageKeys<StorageValuesMap>(...Object.values(StorageFieldEnum)),
       ]);
+
+      this.store = createReduxStore({
+        launchParams: qs.parse(this.state.queriesString),
+      });
 
       this.setState({ loading: false, storage });
     } catch (error) {

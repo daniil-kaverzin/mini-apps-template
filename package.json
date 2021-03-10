@@ -48,7 +48,7 @@
     "unionize": "^3.1.0"
   },
   "scripts": {
-    "check-env:dev": "cross-env DEPLOY_ENV=development.local node prebuild.js",
+    "check-env:dev": "cross-env DEPLOY_ENV=development node prebuild.js",
     "check-env:prod": "cross-env DEPLOY_ENV=production node prebuild.js",
     "start:http": "yarn check-env:dev && cross-env PORT=10889 react-scripts start",
     "start:https": "yarn check-env:dev && cross-env HTTPS=true PORT=10888 react-scripts start",
