@@ -1,2 +1,2 @@
-export * from './RouteProvider';
+export * from './RouterProvider';
 export * from './config';

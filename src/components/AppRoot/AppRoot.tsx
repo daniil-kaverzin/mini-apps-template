@@ -14,7 +14,7 @@ import { createReduxStore, ReduxState } from '../../redux';
 import { getStorageKeys } from '../../utils';
 import config from '../../config';
 import { LaunchParams, StorageFieldEnum, StorageValuesMap } from '../../types';
-import { RouterProvider } from '../providers/RouterProvider/RouteProvider';
+import { RouterProvider } from '../providers/RouterProvider/RouterProvider';
 
 declare global {
   interface Window {
