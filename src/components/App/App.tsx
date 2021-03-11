@@ -14,7 +14,7 @@ import {
   PANEL_SECOND,
   ROUTE_SECOND,
   VIEW_MAIN,
-} from '../providers/RouteProvider';
+} from '../providers/RouterProvider';
 
 export const App: FC = memo(() => {
   const router = useRouter();
@@ -22,7 +22,14 @@ export const App: FC = memo(() => {
 
   return (
     <Root activeView={location.getViewId()}>
-      <View id={VIEW_MAIN} activePanel={location.getPanelId()}>
+      <View
+        id={VIEW_MAIN}
+        onSwipeBack={() => router.popPage()}
+        history={
+          location.hasOverlay() ? [] : location.getViewHistory(VIEW_MAIN)
+        }
+        activePanel={location.getPanelId()}
+      >
         <Panel id={PANEL_FIRST}>
           <PanelHeader>Панель 1</PanelHeader>
           <Div>

@@ -12,7 +12,7 @@ import {
 } from './types';
 
 import vkBridge from '@vkontakte/vk-bridge';
-import { StringKeys } from '../../types';
+import { StringKeys } from '../../../types';
 
 const { Provider } = vkStorageContext;
 

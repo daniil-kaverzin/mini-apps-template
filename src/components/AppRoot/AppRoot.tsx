@@ -4,18 +4,17 @@ import { Provider as StoreProvider, ReactReduxContext } from 'react-redux';
 import { Dictionary, noop } from '@vkontakte/vkjs';
 import vkBridge, { VKBridgeSubscribeHandler } from '@vkontakte/vk-bridge';
 import { ScreenSpinner } from '@vkontakte/vkui';
-import qs from 'qs';
 
-import { ApolloProvider } from '../ApolloProvider';
+import { ApolloProvider } from '../providers/ApolloProvider';
 import { AppCrash } from '../views/AppCrash';
 import { App } from '../App';
 import { ServicePanel } from '../misc/ServicePanel';
-import { VKStorageProvider } from '../VKStorageProvider';
+import { VKStorageProvider } from '../providers/VKStorageProvider';
 import { createReduxStore, ReduxState } from '../../redux';
 import { getStorageKeys } from '../../utils';
 import config from '../../config';
-import { StorageFieldEnum, StorageValuesMap } from '../../types';
-import { RouterProvider } from '../providers/RouteProvider';
+import { LaunchParams, StorageFieldEnum, StorageValuesMap } from '../../types';
+import { RouterProvider } from '../providers/RouterProvider/RouteProvider';
 
 declare global {
   interface Window {
@@ -27,11 +26,13 @@ declare global {
 // Assign human-readable store provider name for debugging purposes
 ReactReduxContext.displayName = 'StoreProvider';
 
-export interface AppRootProps {}
+export interface AppRootProps {
+  launchParamsString: string;
+  launchParamsDictionary: LaunchParams;
+}
 
 export interface AppRootState {
   loading: boolean;
-  queriesString: string;
   error?: string;
   storage?: Dictionary<any>;
 }
@@ -54,7 +55,6 @@ export class AppRoot extends PureComponent<AppRootProps, AppRootState> {
 
   public state: AppRootState = {
     loading: true,
-    queriesString: window.location.search.slice(1),
   };
 
   public async componentDidMount() {
@@ -81,6 +81,7 @@ export class AppRoot extends PureComponent<AppRootProps, AppRootState> {
   public componentWillUnmount() {
     // When component unloads, remove all event listeners
     vkBridge.unsubscribe(this.onVKBridgeEvent);
+
     window.reinitApp = noop;
     window.throwError = noop;
   }
@@ -102,7 +103,7 @@ export class AppRoot extends PureComponent<AppRootProps, AppRootState> {
         <VKStorageProvider storage={storage}>
           <ApolloProvider
             httpUrl={config.gqlHttpUrl}
-            launchParams={this.state.queriesString}
+            launchParams={this.props.launchParamsString}
           >
             <RouterProvider>
               <App />
@@ -140,8 +141,10 @@ export class AppRoot extends PureComponent<AppRootProps, AppRootState> {
       ]);
 
       this.store = createReduxStore({
-        launchParams: qs.parse(this.state.queriesString),
+        launchParams: this.props.launchParamsDictionary,
       });
+
+      console.log(this.props.launchParamsDictionary);
 
       this.setState({ loading: false, storage });
     } catch (error) {

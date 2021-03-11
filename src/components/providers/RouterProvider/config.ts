@@ -1,5 +1,4 @@
-import React, { FC } from 'react';
-import { Page, Router, RouterContext } from '@happysanta/router';
+import { Page, Router } from '@happysanta/router';
 
 export const ROUTE_FIRST = '/';
 export const ROUTE_SECOND = '/something';
@@ -13,12 +12,6 @@ const routes = {
   [ROUTE_SECOND]: new Page(PANEL_SECOND, VIEW_MAIN),
 };
 
-const router = new Router(routes);
+export const router = new Router(routes);
 
 router.start();
-
-export const RouterProvider: FC = ({ children }) => {
-  return (
-    <RouterContext.Provider value={router}>{children}</RouterContext.Provider>
-  );
-};

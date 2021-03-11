@@ -1,6 +1,6 @@
 import { ReactNode, ReactNodeArray } from 'react';
 
-import { StringKeys } from '../../types';
+import { StringKeys } from '../../../types';
 
 export type MemoizeKey<S extends {}> = <K extends StringKeys<S>>(
   key: K,

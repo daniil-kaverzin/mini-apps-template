@@ -12,7 +12,7 @@ import { noop } from '@vkontakte/vkjs';
 
 import './ServicePanel.scss';
 import { tapticNotification } from '../../../utils';
-import { vkStorageContext } from '../../VKStorageProvider';
+import { vkStorageContext } from '../../providers/VKStorageProvider';
 
 const TOUCHES_COUNT_TO_SHOW = 3;
 

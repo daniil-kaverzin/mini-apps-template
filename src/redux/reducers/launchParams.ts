@@ -1,41 +1,20 @@
-export interface LaunchParams {
-  accessTokenSettings: string;
-  appId: string;
-  areNotificationsEnabled: string;
-  isAppUser: string;
-  isFavorite: string;
-  language: 'ru' | 'uk' | 'ua' | 'en' | 'be' | 'kz' | 'pt' | 'es';
-  platform:
-    | 'mobile_android'
-    | 'mobile_iphone'
-    | 'mobile_web'
-    | 'desktop_web'
-    | 'mobile_android_messenger'
-    | 'mobile_iphone_messenger';
-  ref: string;
-  userId: string;
-  groupId: string;
-  viewerGroupRole: string;
-  sign: string;
-}
+import { LaunchParams } from '../../types';
 
 const initialLaunchParams: Partial<LaunchParams> = {
-  accessTokenSettings: '',
-  appId: '0',
-  areNotificationsEnabled: '0',
-  isAppUser: '0',
-  isFavorite: '0',
+  accessTokenSettings: [],
+  appId: 0,
+  areNotificationsEnabled: false,
+  isAppUser: false,
+  isFavorite: false,
   language: 'ru',
   platform: 'desktop_web',
   ref: 'other',
-  userId: '0',
-  groupId: '0',
-  viewerGroupRole: '',
+  userId: 0,
+  groupId: 0,
+  viewerGroupRole: null,
   sign: '',
 };
 
-export const launchParams = (
-  state: Partial<LaunchParams> = initialLaunchParams,
-) => {
+export const launchParams = (state = initialLaunchParams) => {
   return state;
 };
