@@ -42,16 +42,7 @@ export interface AppRootState {
  * first screen is being loaded here
  */
 export class AppRoot extends PureComponent<AppRootProps, AppRootState> {
-  /**
-   * Redux store
-   * @type {Store<ReduxState>}
-   */
   private store: Store<ReduxState> = createReduxStore();
-
-  /**
-   * Application launch parameters
-   * @type {LaunchParams}
-   */
 
   public state: AppRootState = {
     loading: true,
@@ -79,7 +70,6 @@ export class AppRoot extends PureComponent<AppRootProps, AppRootState> {
   }
 
   public componentWillUnmount() {
-    // When component unloads, remove all event listeners
     vkBridge.unsubscribe(this.onVKBridgeEvent);
 
     window.reinitApp = noop;
@@ -115,11 +105,6 @@ export class AppRoot extends PureComponent<AppRootProps, AppRootState> {
     );
   }
 
-  /**
-   * Checks if event is VKWebAppUpdateConfig to know application config
-   * sent from bridge
-   * @param {VKBridgeEvent<ReceiveMethodName>} event
-   */
   private onVKBridgeEvent: VKBridgeSubscribeHandler = (event) => {
     if (event.detail && event.detail.type === 'VKWebAppUpdateConfig') {
       const scheme = event.detail.data.scheme || 'bright_light';
