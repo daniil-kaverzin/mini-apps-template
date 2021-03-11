@@ -11,7 +11,7 @@ import { ActionSheet, ActionSheetItem } from '@vkontakte/vkui';
 import { noop } from '@vkontakte/vkjs';
 
 import './ServicePanel.scss';
-import { tapticNotification } from '../../../utils';
+import { tapticNotification } from '@/utils';
 import { vkStorageContext } from '../../providers/VKStorageProvider';
 
 const TOUCHES_COUNT_TO_SHOW = 3;
@@ -22,12 +22,6 @@ declare global {
   }
 }
 
-/**
- * Service panel for some emergency cases. For example, when user has
- * problem connected with incorrect data in VK storage and we cannot solve
- * this problem remotely (due to, it an be done only from JS)
- * @type {React.NamedExoticComponent<object>}
- */
 export const ServicePanel: FC = memo(() => {
   const [show, setShow] = useState(false);
   const storage = useContext(vkStorageContext);

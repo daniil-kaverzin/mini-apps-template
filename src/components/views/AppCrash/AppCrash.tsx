@@ -2,7 +2,7 @@ import React, { FC, memo } from 'react';
 import { Button, Panel, Text, View } from '@vkontakte/vkui';
 
 import './AppCrash.scss';
-import emojiSadImage from '../../../assets/emoji-sad.png';
+import emojiSadImage from '@/assets/emoji-sad.png';
 
 interface AppCrashProps {
   onRestartClick(): void;

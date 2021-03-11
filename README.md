@@ -8,7 +8,7 @@ Stack:
 - Create React App
 - VKUI
 - React Redux (with devtools extension and `unionize`)
-- Apollo Client (queries, mutations, subscriptions)
+- Apollo Client (queries, mutations)
 - Typescript
 - SCSS
 - Router of Happy Santa

@@ -11,9 +11,9 @@ import { App } from '../App';
 import { ServicePanel } from '../misc/ServicePanel';
 import { VKStorageProvider } from '../providers/VKStorageProvider';
 import { createReduxStore, ReduxState } from '../../redux';
-import { getStorageKeys } from '../../utils';
-import config from '../../config';
-import { LaunchParams, StorageFieldEnum, StorageValuesMap } from '../../types';
+import { getStorageKeys } from '@/utils';
+import config from '@/config';
+import { LaunchParams, StorageFieldEnum, StorageValuesMap } from '@/types';
 import { RouterProvider } from '../providers/RouterProvider/RouterProvider';
 
 declare global {
@@ -128,8 +128,6 @@ export class AppRoot extends PureComponent<AppRootProps, AppRootState> {
       this.store = createReduxStore({
         launchParams: this.props.launchParamsDictionary,
       });
-
-      console.log(this.props.launchParamsDictionary);
 
       this.setState({ loading: false, storage });
     } catch (error) {

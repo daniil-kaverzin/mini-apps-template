@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { createUseNullableContext } from '../../../utils';
+import { createUseNullableContext } from '@/utils';
 
 import { VKStorageContext } from './types';
 
