@@ -2,7 +2,7 @@ const { config } = require('dotenv');
 const { red, green } = require('chalk');
 
 // Calculate env file name
-const deployEnv = process.env.DEPLOY_ENV;
+const deployEnv = process.env.MODE;
 const configFile = `.env.${deployEnv}`;
 
 const requiredEnvVars = ['REACT_APP_GQL_HTTP_URL'];

@@ -1,7 +1,7 @@
 import React, { Fragment, PureComponent } from 'react';
 import { Store } from 'redux';
 import { Provider as StoreProvider, ReactReduxContext } from 'react-redux';
-import { Dictionary, noop } from '@vkontakte/vkjs';
+import { Dictionary } from '@vkontakte/vkjs';
 import vkBridge, { VKBridgeSubscribeHandler } from '@vkontakte/vk-bridge';
 import { ScreenSpinner } from '@vkontakte/vkui';
 
@@ -14,14 +14,7 @@ import { createReduxStore, ReduxState } from '../../redux';
 import { getStorageKeys } from '@/utils';
 import config from '@/config';
 import { LaunchParams, StorageFieldEnum, StorageValuesMap } from '@/types';
-import { RouterProvider } from '../providers/RouterProvider/RouterProvider';
-
-declare global {
-  interface Window {
-    reinitApp: () => void;
-    throwError: (message: string) => void;
-  }
-}
+import { RouterProvider } from '../providers/RouterProvider';
 
 // Assign human-readable store provider name for debugging purposes
 ReactReduxContext.displayName = 'StoreProvider';
@@ -42,41 +35,28 @@ export interface AppRootState {
  * first screen is being loaded here
  */
 export class AppRoot extends PureComponent<AppRootProps, AppRootState> {
-  private store: Store<ReduxState> = createReduxStore();
-
-  public state: AppRootState = {
+  readonly state: AppRootState = {
     loading: true,
   };
 
-  public async componentDidMount() {
+  async componentDidMount() {
     // When component did mount, we are waiting for application config from
-    // bridge and add event listener
+    // bridge and add event listeners
     vkBridge.subscribe(this.onVKBridgeEvent);
 
-    window.reinitApp = () => this.init();
-    window.throwError = (message) => this.throwError(message);
-
-    // Init application
     await this.init();
   }
 
-  private throwError = (error: string) => {
-    this.setState({ error });
-  };
-
-  public componentDidCatch(error: Error) {
+  componentDidCatch(error: Error) {
     // Catch error if it did not happen before
     this.setState({ error: error.message });
   }
 
-  public componentWillUnmount() {
+  componentWillUnmount() {
     vkBridge.unsubscribe(this.onVKBridgeEvent);
-
-    window.reinitApp = noop;
-    window.throwError = noop;
   }
 
-  public render() {
+  render() {
     const { loading, error, storage } = this.state;
 
     if (loading || error || !storage) {
@@ -105,7 +85,7 @@ export class AppRoot extends PureComponent<AppRootProps, AppRootState> {
     );
   }
 
-  private onVKBridgeEvent: VKBridgeSubscribeHandler = (event) => {
+  onVKBridgeEvent: VKBridgeSubscribeHandler = (event) => {
     if (event.detail && event.detail.type === 'VKWebAppUpdateConfig') {
       const scheme = event.detail.data.scheme || 'bright_light';
 
@@ -113,10 +93,9 @@ export class AppRoot extends PureComponent<AppRootProps, AppRootState> {
     }
   };
 
-  /**
-   * Initializes application
-   */
-  private init = async () => {
+  store: Store<ReduxState> = createReduxStore();
+
+  init = async () => {
     this.setState({ loading: true, error: undefined });
 
     try {

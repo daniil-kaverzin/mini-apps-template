@@ -2,13 +2,13 @@ import React, {
   FC,
   Fragment,
   memo,
+  useCallback,
   useContext,
   useEffect,
   useRef,
   useState,
 } from 'react';
 import { ActionSheet, ActionSheetItem } from '@vkontakte/vkui';
-import { noop } from '@vkontakte/vkjs';
 
 import './ServicePanel.scss';
 import { tapticNotification } from '@/utils';
@@ -18,7 +18,7 @@ const TOUCHES_COUNT_TO_SHOW = 3;
 
 declare global {
   interface Window {
-    showServicePanel: () => void;
+    showServicePanel?: () => void;
   }
 }
 
@@ -27,14 +27,14 @@ export const ServicePanel: FC = memo(() => {
   const storage = useContext(vkStorageContext);
   const showTimeoutRef = useRef<number | null>(null);
 
-  const handleChangeScheme = () => {
+  const handleChangeScheme = useCallback(() => {
     document.body.setAttribute(
       'scheme',
       document.body.getAttribute('scheme') === 'bright_light'
         ? 'space_gray'
         : 'bright_light',
     );
-  };
+  }, []);
 
   useEffect(() => {
     // Wait for simultaneous touch of N fingers during a second and show
@@ -56,6 +56,7 @@ export const ServicePanel: FC = memo(() => {
     };
 
     window.showServicePanel = () => setShow(true);
+
     window.addEventListener('touchstart', onTouchStart);
     window.addEventListener('touchend', onTouchEnd);
 
@@ -63,7 +64,7 @@ export const ServicePanel: FC = memo(() => {
       window.removeEventListener('touchstart', onTouchStart);
       window.removeEventListener('touchend', onTouchEnd);
 
-      window.showServicePanel = noop;
+      window.showServicePanel = undefined;
     };
   }, []);
 
@@ -86,17 +87,11 @@ export const ServicePanel: FC = memo(() => {
           }
           onClose={() => setShow(false)}
         >
-          <ActionSheetItem autoclose onClick={window.reinitApp}>
-            Перезагрузить страницу
-          </ActionSheetItem>
           <ActionSheetItem
             autoclose
             onClick={() => window.location.reload(true)}
           >
             Жёстко перезагрузить страницу
-          </ActionSheetItem>
-          <ActionSheetItem autoclose onClick={() => window.throwError('Test')}>
-            Открыть экран с ошибкой
           </ActionSheetItem>
           <ActionSheetItem autoclose onClick={() => storage?.clear()}>
             Очистить хранилище ВКонтакте

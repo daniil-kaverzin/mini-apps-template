@@ -11,6 +11,7 @@ import vkBridge from '@vkontakte/vk-bridge';
 
 import { AppRoot } from './components/AppRoot';
 import { getLaunchParams } from './utils/launchParams';
+import config from './config';
 // import { Platform } from './types';
 
 // Notify native application, initialization done. It will make native
@@ -34,7 +35,7 @@ window.onload = () => {
   // const webViewType = getWebViewType(launchParamsDictionary.platform);
 
   ReactDOM.render(
-    <ConfigProvider>
+    <ConfigProvider isWebView={config.isDevelopment ? true : undefined}>
       <AdaptivityProvider>
         <VKUIAppRoot>
           <AppRoot
