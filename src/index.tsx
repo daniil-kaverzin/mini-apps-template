@@ -9,9 +9,11 @@ import {
 import '@vkontakte/vkui/dist/vkui.css';
 import vkBridge from '@vkontakte/vk-bridge';
 
-import { AppRoot } from './components/AppRoot';
+import { AppRootWithRouter } from './components/AppRoot';
 import { getLaunchParams } from './utils/launchParams';
 import config from './config';
+import { RouterProvider } from './components/providers/RouterProvider';
+import { ApolloProvider } from './components/providers/ApolloProvider';
 // import { Platform } from './types';
 
 // Notify native application, initialization done. It will make native
@@ -19,8 +21,14 @@ import config from './config';
 vkBridge.send('VKWebAppInit');
 
 window.onload = () => {
+  const { isDevelopment, gqlHttpUrl } = config;
+
   const launchParamsString = window.location.search.slice(1);
   const launchParamsDictionary = getLaunchParams(launchParamsString);
+
+  if (isDevelopment) {
+    require('eruda').init();
+  }
 
   // if vk mini app header hidden
   // const getWebViewType = (platform: Platform) => {
@@ -35,16 +43,22 @@ window.onload = () => {
   // const webViewType = getWebViewType(launchParamsDictionary.platform);
 
   ReactDOM.render(
-    <ConfigProvider isWebView={config.isDevelopment ? true : undefined}>
-      <AdaptivityProvider>
-        <VKUIAppRoot>
-          <AppRoot
-            launchParamsString={launchParamsString}
-            launchParamsDictionary={launchParamsDictionary}
-          />
-        </VKUIAppRoot>
-      </AdaptivityProvider>
-    </ConfigProvider>,
+    <RouterProvider>
+      <ConfigProvider isWebView={isDevelopment ? true : undefined}>
+        <AdaptivityProvider>
+          <VKUIAppRoot>
+            <ApolloProvider
+              httpUrl={gqlHttpUrl}
+              launchParams={launchParamsString}
+            >
+              <AppRootWithRouter
+                launchParamsDictionary={launchParamsDictionary}
+              />
+            </ApolloProvider>
+          </VKUIAppRoot>
+        </AdaptivityProvider>
+      </ConfigProvider>
+    </RouterProvider>,
     document.getElementById('root'),
   );
 };

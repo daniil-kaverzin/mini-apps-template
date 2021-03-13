@@ -1,40 +1,37 @@
 import React, { Fragment, PureComponent } from 'react';
 import { Store } from 'redux';
 import { Provider as StoreProvider, ReactReduxContext } from 'react-redux';
-import { Dictionary } from '@vkontakte/vkjs';
 import vkBridge, { VKBridgeSubscribeHandler } from '@vkontakte/vk-bridge';
 import { ScreenSpinner } from '@vkontakte/vkui';
+import { RouterProps, withRouter } from '@happysanta/router';
 
-import { ApolloProvider } from '../providers/ApolloProvider';
 import { AppCrash } from '../views/AppCrash';
 import { App } from '../App';
 import { ServicePanel } from '../misc/ServicePanel';
 import { VKStorageProvider } from '../providers/VKStorageProvider';
-import { createReduxStore, ReduxState } from '../../redux';
+import { createReduxStore, ReduxState } from '@/redux';
 import { getStorageKeys } from '@/utils';
-import config from '@/config';
 import { LaunchParams, StorageFieldEnum, StorageValuesMap } from '@/types';
-import { RouterProvider } from '../providers/RouterProvider';
+import { ROUTE_ONBOARDING } from '../providers/RouterProvider';
 
 // Assign human-readable store provider name for debugging purposes
 ReactReduxContext.displayName = 'StoreProvider';
 
-export interface AppRootProps {
-  launchParamsString: string;
+export interface AppRootProps extends RouterProps {
   launchParamsDictionary: LaunchParams;
 }
 
 export interface AppRootState {
   loading: boolean;
   error?: string;
-  storage?: Dictionary<any>;
+  storage?: Partial<StorageValuesMap>;
 }
 
 /**
  * Root application component. Everything application requires for showing
  * first screen is being loaded here
  */
-export class AppRoot extends PureComponent<AppRootProps, AppRootState> {
+class AppRoot extends PureComponent<AppRootProps, AppRootState> {
   readonly state: AppRootState = {
     loading: true,
   };
@@ -71,15 +68,8 @@ export class AppRoot extends PureComponent<AppRootProps, AppRootState> {
     return (
       <StoreProvider store={this.store}>
         <VKStorageProvider storage={storage}>
-          <ApolloProvider
-            httpUrl={config.gqlHttpUrl}
-            launchParams={this.props.launchParamsString}
-          >
-            <RouterProvider>
-              <App />
-            </RouterProvider>
-            <ServicePanel />
-          </ApolloProvider>
+          <App />
+          <ServicePanel />
         </VKStorageProvider>
       </StoreProvider>
     );
@@ -104,6 +94,10 @@ export class AppRoot extends PureComponent<AppRootProps, AppRootState> {
         getStorageKeys<StorageValuesMap>(...Object.values(StorageFieldEnum)),
       ]);
 
+      if (!storage[StorageFieldEnum.ONBOARDING_DISABLED]) {
+        this.props.router.replacePage(ROUTE_ONBOARDING);
+      }
+
       this.store = createReduxStore({
         launchParams: this.props.launchParamsDictionary,
       });
@@ -118,3 +112,5 @@ export class AppRoot extends PureComponent<AppRootProps, AppRootState> {
     }
   };
 }
+
+export const AppRootWithRouter = withRouter(AppRoot);

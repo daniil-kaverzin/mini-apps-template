@@ -6,7 +6,7 @@ export type MemoizeKey<S extends {}> = <K extends StringKeys<S>>(
   key: K,
   value: S[K],
 ) => Promise<any>;
-export type MemoizeMap<S extends {}> = (values: Partial<S>) => Promise<any>;
+export type MemoizeMap<S extends {}> = (values: S) => Promise<any>;
 export type ClearAll = () => Promise<any>;
 export type ClearKeys<S extends {}> = (
   ...keys: StringKeys<S>[]

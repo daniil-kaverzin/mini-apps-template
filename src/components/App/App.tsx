@@ -5,14 +5,17 @@ import { useThrottlingLocation, useRouter } from '@happysanta/router';
 import {
   MODAL_FIRST,
   PANEL_FIRST,
+  PANEL_ONBOARDING,
   PANEL_SECOND,
   POPOUT_ACTION_SHEET_FIRST,
   VIEW_MAIN,
+  VIEW_ONBOARDING,
 } from '../providers/RouterProvider';
 import { Panel1 } from '../panels/Panel1';
 import { Panel2 } from '../panels/Panel2';
 import { Modal1 } from '../modals/Modal1';
 import { ActionSheet1 } from '../popouts/ActionSheet1';
+import { Onboarding } from '../panels/Onboarding';
 
 export const App: FC = memo(() => {
   const router = useRouter();
@@ -50,10 +53,20 @@ export const App: FC = memo(() => {
         history={
           location.hasOverlay() ? [] : location.getViewHistory(VIEW_MAIN)
         }
-        activePanel={location.getPanelId()}
+        activePanel={location.getViewActivePanel(VIEW_MAIN) || ''}
       >
         <Panel1 id={PANEL_FIRST} />
         <Panel2 id={PANEL_SECOND} />
+      </View>
+      <View
+        id={VIEW_ONBOARDING}
+        onSwipeBack={() => router.popPage()}
+        history={
+          location.hasOverlay() ? [] : location.getViewHistory(PANEL_ONBOARDING)
+        }
+        activePanel={location.getViewActivePanel(VIEW_ONBOARDING) || ''}
+      >
+        <Onboarding id={PANEL_ONBOARDING} />
       </View>
     </Root>
   );
