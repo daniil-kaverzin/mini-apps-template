@@ -3,7 +3,6 @@ import React, {
   Fragment,
   memo,
   useCallback,
-  useContext,
   useEffect,
   useRef,
   useState,
@@ -12,7 +11,7 @@ import { ActionSheet, ActionSheetItem } from '@vkontakte/vkui';
 
 import './ServicePanel.scss';
 import { tapticNotification } from '@/utils';
-import { vkStorageContext } from '../../providers/VKStorageProvider';
+import { useVKStorage } from '@/hooks/useVKStorage';
 
 const TOUCHES_COUNT_TO_SHOW = 3;
 
@@ -24,7 +23,7 @@ declare global {
 
 export const ServicePanel: FC = memo(() => {
   const [show, setShow] = useState(false);
-  const storage = useContext(vkStorageContext);
+  const storage = useVKStorage();
   const showTimeoutRef = useRef<number | null>(null);
 
   const handleChangeScheme = useCallback(() => {
