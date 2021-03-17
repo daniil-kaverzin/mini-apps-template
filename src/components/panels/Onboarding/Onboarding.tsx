@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import { FC, useCallback } from 'react';
 import {
   Button,
   Div,
@@ -8,6 +8,7 @@ import {
   PanelProps,
 } from '@vkontakte/vkui';
 import { useRouter } from '@happysanta/router';
+
 import { ROUTE_FIRST } from '@/components/providers/RouterProvider';
 import { useVKStorage } from '@/hooks/useVKStorage';
 import { StorageFieldEnum } from '@/types';

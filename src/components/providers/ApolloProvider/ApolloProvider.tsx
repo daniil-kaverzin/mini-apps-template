@@ -1,4 +1,4 @@
-import React, { memo, ReactNode, ReactNodeArray, useMemo } from 'react';
+import { memo, ReactNode, ReactNodeArray, useMemo } from 'react';
 
 import { ApolloProvider as ReactApolloProvider } from '@apollo/react-hooks';
 

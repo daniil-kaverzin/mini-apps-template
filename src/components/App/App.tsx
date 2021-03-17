@@ -1,4 +1,4 @@
-import React, { FC, memo, useMemo } from 'react';
+import { FC, memo, useMemo } from 'react';
 import { ModalRoot, Root, View } from '@vkontakte/vkui';
 import { useThrottlingLocation, useRouter } from '@happysanta/router';
 

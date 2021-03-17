@@ -1,4 +1,4 @@
-import React, { FC, Fragment } from 'react';
+import { FC, Fragment } from 'react';
 import { useRouter } from '@happysanta/router';
 import { Button, Div, Panel, PanelHeader, PanelProps } from '@vkontakte/vkui';
 

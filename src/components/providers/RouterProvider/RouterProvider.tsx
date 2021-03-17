@@ -1,5 +1,5 @@
 import { Page, Router, RouterContext } from '@happysanta/router';
-import React, { FC } from 'react';
+import { FC } from 'react';
 
 export const ROUTE_ONBOARDING = '/onboarding';
 export const ROUTE_FIRST = '/';

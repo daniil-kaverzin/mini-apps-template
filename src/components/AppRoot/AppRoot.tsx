@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import { Fragment, PureComponent } from 'react';
 import { Store } from 'redux';
 import { Provider as StoreProvider, ReactReduxContext } from 'react-redux';
 import vkBridge, { VKBridgeSubscribeHandler } from '@vkontakte/vk-bridge';
