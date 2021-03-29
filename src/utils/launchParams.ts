@@ -30,14 +30,30 @@ const paramParsers: Dictionary<[string, (value: string) => void]> = {
 };
 
 export function getLaunchParams(queriesString: string): LaunchParams {
-  return queriesString.split('&').reduce<any>((acc, pair) => {
-    const [key, value] = pair.split('=');
+  return queriesString.split('&').reduce<any>(
+    (acc, pair) => {
+      const [key, value] = pair.split('=');
 
-    if (key in paramParsers) {
-      const [field, parse] = paramParsers[key];
-      acc[field] = parse(value);
-    }
+      if (key in paramParsers) {
+        const [field, parse] = paramParsers[key];
+        acc[field] = parse(value);
+      }
 
-    return acc;
-  }, {});
+      return acc;
+    },
+    {
+      accessTokenSettings: [],
+      appId: 0,
+      areNotificationsEnabled: false,
+      isAppUser: false,
+      isFavorite: false,
+      language: 'ru',
+      platform: 'desktop_web',
+      ref: 'other',
+      userId: 0,
+      groupId: 0,
+      viewerGroupRole: null,
+      sign: '',
+    },
+  );
 }

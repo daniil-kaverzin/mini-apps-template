@@ -11,7 +11,7 @@ import { ActionSheet, ActionSheetItem } from '@vkontakte/vkui';
 
 import './ServicePanel.scss';
 import { tapticNotification } from '@/utils';
-import { useVKStorage } from '@/hooks/useVKStorage';
+import { useVKStorage } from '@/hooks';
 
 const TOUCHES_COUNT_TO_SHOW = 3;
 

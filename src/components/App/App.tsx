@@ -1,6 +1,13 @@
 import { FC, memo, useMemo } from 'react';
-import { ModalRoot, Root, View } from '@vkontakte/vkui';
-import { useThrottlingLocation, useRouter } from '@happysanta/router';
+import {
+  ModalRoot,
+  PanelHeader,
+  Root,
+  SplitCol,
+  SplitLayout,
+  View,
+} from '@vkontakte/vkui';
+import { useLocation, useRouter } from '@happysanta/router';
 
 import {
   MODAL_FIRST,
@@ -16,10 +23,13 @@ import { Panel2 } from '../panels/Panel2';
 import { Modal1 } from '../modals/Modal1';
 import { ActionSheet1 } from '../popouts/ActionSheet1';
 import { Onboarding } from '../panels/Onboarding';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 export const App: FC = memo(() => {
+  const isMobile = useIsMobile();
+
   const router = useRouter();
-  const [location] = useThrottlingLocation();
+  const location = useLocation();
 
   const renderModal = useMemo(() => {
     return (
@@ -42,32 +52,38 @@ export const App: FC = memo(() => {
   }, [router, location]);
 
   return (
-    <Root
-      activeView={location.getViewId()}
-      modal={renderModal}
-      popout={renderPopout}
-    >
-      <View
-        id={VIEW_MAIN}
-        onSwipeBack={() => router.popPage()}
-        history={
-          location.hasOverlay() ? [] : location.getViewHistory(VIEW_MAIN)
-        }
-        activePanel={location.getViewActivePanel(VIEW_MAIN) || ''}
-      >
-        <Panel1 id={PANEL_FIRST} />
-        <Panel2 id={PANEL_SECOND} />
-      </View>
-      <View
-        id={VIEW_ONBOARDING}
-        onSwipeBack={() => router.popPage()}
-        history={
-          location.hasOverlay() ? [] : location.getViewHistory(PANEL_ONBOARDING)
-        }
-        activePanel={location.getViewActivePanel(VIEW_ONBOARDING) || ''}
-      >
-        <Onboarding id={PANEL_ONBOARDING} />
-      </View>
-    </Root>
+    <SplitLayout header={!isMobile && <PanelHeader separator={false} />}>
+      <SplitCol spaced={!isMobile}>
+        <Root
+          activeView={location.getViewId()}
+          modal={renderModal}
+          popout={renderPopout}
+        >
+          <View
+            id={VIEW_MAIN}
+            onSwipeBack={() => router.popPage()}
+            history={
+              location.hasOverlay() ? [] : location.getViewHistory(VIEW_MAIN)
+            }
+            activePanel={location.getViewActivePanel(VIEW_MAIN) || ''}
+          >
+            <Panel1 id={PANEL_FIRST} />
+            <Panel2 id={PANEL_SECOND} />
+          </View>
+          <View
+            id={VIEW_ONBOARDING}
+            onSwipeBack={() => router.popPage()}
+            history={
+              location.hasOverlay()
+                ? []
+                : location.getViewHistory(PANEL_ONBOARDING)
+            }
+            activePanel={location.getViewActivePanel(VIEW_ONBOARDING) || ''}
+          >
+            <Onboarding id={PANEL_ONBOARDING} />
+          </View>
+        </Root>
+      </SplitCol>
+    </SplitLayout>
   );
 });

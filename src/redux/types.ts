@@ -1,4 +1,8 @@
+import { LaunchParams } from '@/types';
+
 /**
  * Redux state fields description
  */
-export interface ReduxState {}
+export interface ReduxState {
+  launchParams: LaunchParams;
+}
